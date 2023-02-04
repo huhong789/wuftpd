@@ -34,7 +34,7 @@ LIBC   = /lib/libc.a
 IFLAGS = 
 LFLAGS = 
 RPMFLAGS = $(shell if [ "${RPM_OPT_FLAGS}" != "" ]; then echo "${RPM_OPT_FLAGS}"; else echo "-O3"; fi )
-CFLAGS = ${RPMFLAGS} -fomit-frame-pointer -fno-strength-reduce -pipe ${IFLAGS} ${LFLAGS}
+CFLAGS = ${RPMFLAGS} -fomit-frame-pointer -fno-strength-reduce -pipe -Wno-unused-result ${IFLAGS} ${LFLAGS}
 
 SRCS   = strcasestr.c authuser.c snprintf.c
 OBJS   = strcasestr.o authuser.o snprintf.o

@@ -40,7 +40,9 @@
 #if defined(HAVE_FCNTL_H)
 #include <fcntl.h>
 #endif
+
 #include <utmp.h>
+
 #ifdef SVR4
 #ifndef NO_UTMPX
 #include <utmpx.h>
@@ -192,7 +194,7 @@ void wu_logwtmp(char *line, char *name, char *host, int login)
 	    (void) strncpy(ut.ut_host, "", sizeof(ut.ut_host));
 	}
 #endif
-	(void) time(&ut.ut_time);
+	(void) time(&ut.ut_tv.tv_sec);
 	if (write(fd, (char *) &ut, sizeof(struct utmp)) !=
 	    sizeof(struct utmp))
 	         (void) ftruncate(fd, buf.st_size);

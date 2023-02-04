@@ -32,7 +32,7 @@ CC=@CC@
 #WNOERROR=-Werror
 #WARNINGS=$(WNOERROR) -Wall -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes 
 
-CFLAGS=$(WARNINGS) @CFLAGS@
+CFLAGS=$(WARNINGS) @CFLAGS@ -Wno-unused-result
 LDFLAGS=@LDFLAGS@
 YACC=@YACC@
 LIBS=@LIBS@

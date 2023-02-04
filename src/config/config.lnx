@@ -50,7 +50,8 @@
 #define HAVE_SNPRINTF
 #define LINUX
 #define QUOTA_INODE
-#define HAVE_SYS_TIME_H
+//#define HAVE_SYS_TIME_H
+#undef  HAVE_SYS_TIME_H
 #define NO_UTMPX
 #undef  HAVE_REGEX
 #define HAVE_REGEX_H

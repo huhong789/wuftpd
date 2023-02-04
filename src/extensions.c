@@ -36,16 +36,19 @@
 #include <syslog.h>
 #endif
 
-#ifdef TIME_WITH_SYS_TIME
-#include <time.h>
+//#ifdef TIME_WITH_SYS_TIME
+//#include <time.h>
+//#include <sys/time.h>
+//#else
+//#ifdef HAVE_SYS_TIME_H
+//#include <sys/time.h>
+//#else
+//#include <time.h>
+//#endif
+//#endif
+
 #include <sys/time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
 #include <time.h>
-#endif
-#endif
 #include <pwd.h>
 #include <setjmp.h>
 #include <grp.h>
@@ -66,6 +69,8 @@
 #elif defined(HAVE_SYS_MNTTAB_H)
 #include <sys/mnttab.h>
 #endif
+
+#include <sys/quota.h>
 
 #if defined(HAVE_STATVFS)
 #include <sys/statvfs.h>
@@ -96,13 +101,16 @@ struct dqblk quota;
 char *time_quota(long curstate, long softlimit, long timelimit, char *timeleft);
 #endif
 
-#ifdef HAVE_REGEX_H
-#include <regex.h>
-#endif
 
 #if defined(HAVE_REGEX) && defined(SVR4) && ! (defined(NO_LIBGEN))
 #include <libgen.h>
 #endif
+
+//#ifdef HAVE_REGEX_H
+//#endif
+#define __USE_GNU
+#include <regex.h>
+#include <sys/types.h>
 
 extern int type, transflag, ftwflag, authenticated, autospout_free, data,
     pdata, anonymous, guest;
@@ -182,6 +190,7 @@ int show_fullinfo;
 #define L_FORMAT "d"
 #endif
 #endif
+
 #if !defined(T_FORMAT)
 #define T_FORMAT "d"
 #endif
@@ -191,6 +200,12 @@ int show_fullinfo;
 #if !defined(GR_GID_FORMAT)
 #define GR_GID_FORMAT "d"
 #endif
+
+#undef L_FORMAT
+#define L_FORMAT "ld"
+#undef T_FORMAT
+#define T_FORMAT "ld"
+
 
 int snprintf(char *str, size_t count, const char *fmt,...);
 
@@ -391,16 +406,16 @@ void msg_massage(const char *inbuf, char *outbuf, size_t outlen)
 
 	    case 'Q':
 #ifdef QUOTA_BLOCKS		/* 1024-blocks instead of 512-blocks */
-		snprintf(outptr, outlen, "%ld", quota.dqb_curblocks % 2 ?
-			 (long) (quota.dqb_curblocks / 2 + 1) : (long) (quota.dqb_curblocks / 2));
+		snprintf(outptr, outlen, "%ld", quota.dqb_curspace % 2 ?
+			 (long) (quota.dqb_curspace / 2 + 1) : (long) (quota.dqb_curspace / 2));
 #else
-		snprintf(outptr, outlen, "%ld", quota.dqb_curblocks);
+		snprintf(outptr, outlen, "%ld", quota.dqb_curspace);
 #endif
 		break;
 
 	    case 'I':
 #if defined(QUOTA_INODE)
-		snprintf(outptr, outlen, "%d", quota.dqb_ihardlimit);
+		snprintf(outptr, outlen, "%ld", quota.dqb_ihardlimit);
 #else
 		snprintf(outptr, outlen, "%ld", (long) quota.dqb_fhardlimit);
 #endif
@@ -408,7 +423,7 @@ void msg_massage(const char *inbuf, char *outbuf, size_t outlen)
 
 	    case 'i':
 #if defined(QUOTA_INODE)
-		snprintf(outptr, outlen, "%d", quota.dqb_isoftlimit);
+		snprintf(outptr, outlen, "%ld", quota.dqb_isoftlimit);
 #else
 		snprintf(outptr, outlen, "%ld", (long) quota.dqb_fsoftlimit);
 #endif
@@ -416,14 +431,14 @@ void msg_massage(const char *inbuf, char *outbuf, size_t outlen)
 
 	    case 'q':
 #if defined(QUOTA_INODE)
-		snprintf(outptr, outlen, "%d", quota.dqb_curinodes);
+		snprintf(outptr, outlen, "%ld", quota.dqb_curinodes);
 #else
 		snprintf(outptr, outlen, "%ld", (long) quota.dqb_curfiles);
 #endif
 		break;
 
 	    case 'H':
-		time_quota(quota.dqb_curblocks, quota.dqb_bsoftlimit,
+		time_quota(quota.dqb_curspace, quota.dqb_bsoftlimit,
 #if defined(QUOTA_INODE)
 			   quota.dqb_btime, timeleft);
 #else
@@ -2023,7 +2038,7 @@ int quotactl(int cmd, const char *special, int id, caddr_t addr)
 #define __LIBRARY__
 #include <linux/unistd.h>
 
-_syscall4(int, quotactl, int, cmd, const char *, special, int, id, caddr_t, addr);
+//_syscall4(int, quotactl, int, cmd, const char *, special, int, id, caddr_t, addr);
 #endif /* __alpha__ */
 #elif !defined(HAVE_QUOTACTL)	/* LINUX */
 #ifdef QUOTA_DEVICE

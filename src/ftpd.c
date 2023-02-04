@@ -89,12 +89,16 @@
 #include <sys/fs/ufs_quota.h>
 #endif
 
+#include <sys/quota.h>
+
 #ifdef HAVE_SYS_SYSLOG_H
 #include <sys/syslog.h>
 #endif
+
 #if defined(HAVE_SYSLOG_H) || (!defined(AUTOCONF) && !defined(HAVE_SYS_SYSLOG_H))
 #include <syslog.h>
 #endif
+
 #ifdef TIME_WITH_SYS_TIME
 #include <time.h>
 #include <sys/time.h>
@@ -105,6 +109,7 @@
 #include <time.h>
 #endif
 #endif
+
 #include "conversions.h"
 #include "extensions.h"
 
@@ -4091,7 +4096,7 @@ void retrieve(char *cmd, char *name)
 		(void) strcpy(fnbuf, name);
 		if (strcmp(fnbuf + namelen - pfxlen, cptr->postfix))
 		    continue;
-		*(fnbuf + namelen - pfxlen) = (char) NULL;
+		*(fnbuf + namelen - pfxlen) = (char) 0;
 		if (stat(fnbuf, &st) != 0)
 		    continue;
 	    }
@@ -4288,6 +4293,9 @@ void retrieve(char *cmd, char *name)
 #endif
 #endif
 #endif
+
+#undef L_FORMAT
+#define L_FORMAT "ld"
 
 /* Some sprintfs can't deal with a lot of arguments, so we split this */
 /* Note it also needs fixing for C9X, so we ALWAYS split it. */

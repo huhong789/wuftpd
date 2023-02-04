@@ -65,7 +65,7 @@ LFLAGS   = -L../support -s \
 	        echo "-static"; \
 	      fi )
 RPM_OPT_FLAGS = -O3
-CFLAGS   = ${RPM_OPT_FLAGS} -fomit-frame-pointer -fno-strength-reduce -pipe ${IFLAGS} ${LFLAGS} ${CDEFS}
+CFLAGS   = ${RPM_OPT_FLAGS} -fomit-frame-pointer -fno-strength-reduce -pipe -Wno-unused-result ${IFLAGS} ${LFLAGS} ${CDEFS}
 XOBJS    = 
 # select based on type
 AUXLIBS	 := $(shell \

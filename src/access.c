@@ -750,7 +750,7 @@ int acl_getclass(char *classbuf)
 	}
     }
 
-    *classbuf = (char) NULL;
+    *classbuf = (char) 0;
     return (0);
 
 }
@@ -1107,7 +1107,7 @@ int acl_deny(char *msgpathbuf)
     struct aclmember *entry = NULL;
 
     if (msgpathbuf)
-	*msgpathbuf = (char) NULL;
+	*msgpathbuf = (char) 0;
 
     /* deny <addrglob> [<message_file>] */
     while (getaclentry("deny", &entry)) {
